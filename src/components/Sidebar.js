@@ -1,6 +1,6 @@
 /** @format */
 
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import '../styles/sidebar.css';
 
 import ExpandMoreSharpIcon from '@mui/icons-material/ExpandMoreSharp';
@@ -16,13 +16,43 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import SidebarChannel from './SidebarChannel'
 import {selectUser} from '../features/userSlice'
 import { useSelector } from 'react-redux';
-import { auth ,signOut} from '../lib/firebase';
+import  { db, auth ,signOut} from '../lib/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
 const handleAddChannels =() =>{
   return null
 }
 function Sidebar() {
   const user = useSelector(selectUser)
-  console.log(user)
+  const [channels, setChannels] = useState([])
+
+  useEffect(() => {
+
+    const getChannels =() => {
+
+      const q = collection(db, 'channels')
+      
+      onSnapshot(
+        q,
+        (docs) =>{
+          const channelsdata = docs.docs.map((doc)=>({
+            ...doc.data(),
+            id : doc?.id
+          }))
+          setChannels(channelsdata)
+        },
+        (err) =>{
+          console.log(err)
+        }
+        )
+        
+      }
+
+      getChannels()
+    
+  
+   
+  }, [])
+  
   return (
     <div className='sidebar'>
       <div className='sidebar__top'>
@@ -38,9 +68,14 @@ function Sidebar() {
             <AddIcon onclick={handleAddChannels()} className='sidebar__addChannel'/>
         </div>
         <div className="sidebar__channelList">
-          <SidebarChannel channelName={"neeraj"} id={55}/>
-          <SidebarChannel channelName={"neeraj3"} id={55}/>
-          <SidebarChannel channelName={"neeraj23"} id={55}/>
+          {channels.map(({ id, channel }) => (
+            <SidebarChannel
+              key={id}
+              id={id}
+              channelName={channel?.channelName }
+            />
+          ))}
+          
 
         </div>
       </div>

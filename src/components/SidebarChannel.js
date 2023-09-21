@@ -2,6 +2,7 @@ import '../styles/sidebar-Channel.css';
 
 
 function SidebarChannel({id,channelName}) {
+  console.log(channelName)
   return (
     <div className='sidebar__channel'>
         <h4>
