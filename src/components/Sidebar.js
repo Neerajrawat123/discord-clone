@@ -17,7 +17,7 @@ import SidebarChannel from './SidebarChannel'
 import {selectUser} from '../features/userSlice'
 import { useSelector } from 'react-redux';
 import  { db, auth ,signOut} from '../lib/firebase';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { addDoc, arrayUnion, collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
 const handleAddChannels =() =>{
   return null
 }
@@ -29,7 +29,7 @@ function Sidebar() {
 
     const getChannels =() => {
 
-      const q = collection(db, 'channels')
+      const q = collection(db, `channels`)
       
       onSnapshot(
         q,
@@ -52,7 +52,22 @@ function Sidebar() {
   
    
   }, [])
-  
+  console.log(channels)
+
+  const handleAddChannel = () => {
+    const channelName = prompt("Enter a new channel name");
+
+    if (channelName) {
+      const docref = collection(db,"channels")
+      addDoc(docref,{
+
+        channelName: channelName,}
+        
+        )
+     
+     
+    }
+  };
   return (
     <div className='sidebar'>
       <div className='sidebar__top'>
@@ -65,16 +80,19 @@ function Sidebar() {
             <ExpandMoreSharpIcon />
             <h4>Text Channels</h4>
           </div>
-            <AddIcon onclick={handleAddChannels()} className='sidebar__addChannel'/>
+            <AddIcon onClick={() => handleAddChannel()} className='sidebar__addChannel'/>
         </div>
         <div className="sidebar__channelList">
-          {channels.map(({ id, channel }) => (
-            <SidebarChannel
-              key={id}
-              id={id}
-              channelName={channel?.channelName }
-            />
-          ))}
+
+          {
+            
+            channels.map((channel ) => (
+              <SidebarChannel
+                key={channel?.id}
+                id={channel?.id}
+                channelName={channel?.channelName }
+              />
+            ))}
           
 
         </div>
