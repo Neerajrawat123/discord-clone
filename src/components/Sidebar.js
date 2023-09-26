@@ -52,7 +52,7 @@ function Sidebar() {
   
    
   }, [])
-  console.log(channels)
+  console.log(user)
 
   const handleAddChannel = () => {
     const channelName = prompt("Enter a new channel name");
@@ -71,7 +71,7 @@ function Sidebar() {
   return (
     <div className='sidebar'>
       <div className='sidebar__top'>
-        <h3>{user.name}</h3>
+        <h3>{user.displayName}</h3>
         <ExpandMoreSharpIcon />
       </div>
       <div className='sidebar__channels'>
